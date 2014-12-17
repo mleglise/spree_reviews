@@ -1,6 +1,6 @@
 class Spree::ReviewsController < Spree::StoreController
   helper Spree::BaseHelper
-  before_filter :load_product, :only => [:index, :new, :create]
+  before_filter :load_product, :only => [:index, :new, :create, :show]
   rescue_from ActiveRecord::RecordNotFound, :with => :render_404
 
   def index
@@ -23,11 +23,29 @@ class Spree::ReviewsController < Spree::StoreController
     @review.locale = I18n.locale.to_s if Spree::Reviews::Config[:track_locale]
 
     authorize! :create, @review
-    if @review.save
-      flash[:notice] = Spree.t('review_successfully_submitted')
-      redirect_to spree.product_path(@product)
-    else
-      render :new
+    respond_to do |format|
+      if @review.save
+        format.html { redirect_to spree.product_path(@product), notice: 'review_successfully_submitted' }
+        format.json { render json: @review, status: :created }
+        format.js   { render }
+      else
+        format.html { render action: 'new' }
+        format.json { render json: @review.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def show
+    @review = Spree::Review.find(params[:id])
+
+    respond_to do |format|
+      if @review
+        format.html { render }
+        format.json { render json: @review }
+      else
+        format.html { render action: 'new' }
+        format.json { render json: @review.errors, status: :unprocessable_entity }
+      end
     end
   end
 

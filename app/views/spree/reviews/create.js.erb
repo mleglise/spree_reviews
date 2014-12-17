@@ -1,0 +1,2 @@
+$('div#review-product-<%= @review.product.id %>').html("<%= j render(:partial => 'spree/shared/review', locals: { review: @review, product: @review.product }) %>");
+$('input[type=radio].star').rating();
