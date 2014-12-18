@@ -89,6 +89,9 @@
 				<td class="align-center">
 					<%= review.user_id ? link_to(review.user.try(:email), [:admin, review.user]) : Spree.t(:anonymous) %></p>
 					<p><%= Spree::Review.human_attribute_name(:ip_address) %>: <%= review.ip_address ? link_to(review.ip_address, "http://whois.domaintools.com/#{review.ip_address}") : '-' %></p>
+					<span class="state <%= review.verified? ? 'complete' : 'pending'%>">
+            <%= review.verified? ? 'Verified' : 'Not Verified' %>
+          </span>
 				</td>
 				<td class="align-center">
 					<%= l review.created_at, :format => :short %>
