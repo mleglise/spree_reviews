@@ -77,6 +77,8 @@
 					<% if review.product %>
 						<%= link_to review.product.name, product_path(review.product) %>
 					<% end %>
+					<br>
+				  &quot;<%= review.title %>&quot;
 				</td>
 				<td class="align-center">
 					<%= txt_stars(review.rating) %>
