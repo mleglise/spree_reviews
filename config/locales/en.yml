@@ -41,6 +41,7 @@ en:
       tab:
         review_management: Reviews
     review_successfully_submitted: Review was successfully submitted
+    review_successfully_updated: Review was successfully updated
     spree_reviews:
       feedback_rating: Rate feedback
       include_unapproved: Include unapproved reviews in listings

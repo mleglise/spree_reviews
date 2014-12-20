@@ -11,6 +11,8 @@ describe Spree::ReviewsController do
                 review: 'Some big review text..' } }
   end
 
+  let(:review) { create(:review ) }
+
   before do
     controller.stub :spree_current_user => user
     controller.stub :spree_user_signed_in? => true
@@ -130,6 +132,31 @@ describe Spree::ReviewsController do
         Spree::Reviews::Config.preferred_track_locale = true
         spree_post :create, review_params
         assigns[:review].locale.should eq I18n.locale.to_s
+      end
+    end
+  end
+
+  describe '#update' do
+    context "as owner of review" do
+      context 'review has not been approved' do
+        before do
+          spree_put :update, { product_id: product.slug, id: review.to_param, review: { title: 'spec tester' }}
+        end
+        it 'allows the update' do
+          expect(response.status).to eq(302)
+          assigns[:review].title.should eq 'spec tester'
+        end
+      end
+
+      context 'review has been approved' do
+        let(:review) { create(:review, {approved: true, title: 'old title'}) }
+        before do
+          spree_put :update, { product_id: product.slug, id: review.to_param, review: { title: 'spec tester' }}
+        end
+        it 'rejects the update' do
+          expect(response.status).to eq(302)
+          assigns[:review].title.should_not eq 'spec tester'
+        end
       end
     end
   end

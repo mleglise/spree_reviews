@@ -26,13 +26,27 @@ class Spree::ReviewsController < Spree::StoreController
     respond_to do |format|
       if @review.save
         flash[:success] = "Review has been saved!"
-        format.html { redirect_to spree.product_path(@product), notice: 'review_successfully_submitted' }
+        format.html { redirect_to spree.product_path(@product), notice: Spree.t(:review_successfully_submitted) }
         format.json { render json: @review, status: :created }
         format.js   { render }
       else
         flash[:error]   = "Review has not been saved!"
         format.html { render action: 'new' }
         format.js   { render inline: '', layout: true }
+        format.json { render json: @review.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+  
+  def update
+    @review = Spree::Review.find(params[:id])
+    authorize! :update, @review
+    respond_to do |format|
+      if @review.update(review_params)
+        format.html { redirect_to [@review.product, @review], notice: Spree.t(:review_successfully_updated) }
+        format.json { render json: @review, status: :updated }
+      else
+        format.html { render action: 'edit' }
         format.json { render json: @review.errors, status: :unprocessable_entity }
       end
     end

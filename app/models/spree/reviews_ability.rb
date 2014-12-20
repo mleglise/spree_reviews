@@ -9,6 +9,12 @@ class Spree::ReviewsAbility
     can :create, Spree::FeedbackReview do |review|
       review_ability_class.allow_anonymous_reviews? || !user.email.blank?
     end
+    if !user.new_record?
+      can :update, Spree::Review do |review|
+        # TODO: only allow admin or review owner to update
+        review.approved == false
+      end
+    end
   end
 
   def self.allow_anonymous_reviews?
