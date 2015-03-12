@@ -72,7 +72,7 @@
 		</thead>
 		<tbody>
 		<%- @reviews.each do |review| -%>
-			<tr id="<%= dom_id review %>">
+			<tr id="<%= dom_id review %>" class="<%= review.approved? ? 'odd' : 'even' %>">
 				<td>
 					<% if review.product %>
 						<%= link_to review.product.name, product_path(review.product) %>
